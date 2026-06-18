@@ -37,11 +37,11 @@ jobs:
     name: Publish to PyPI
     needs: build
     runs-on: ubuntu-latest
-#    if: github.event_name != 'pull_request'
+    if: github.event_name == 'release'
 
     environment:
-      name: ${{ github.event_name == 'release' && 'pypi' || 'testpypi' }}
-      url: ${{ github.event_name == 'release' && 'https://pypi.org/p/rtkprog' || 'https://test.pypi.org/p/rtkprog' }}
+      name: pypi
+      url: https://pypi.org/p/rtkprog
 
     permissions:
       id-token: write
@@ -55,5 +55,3 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1.12.4
-        with:
-          repository-url: ${{ github.event_name == 'release' && 'https://pypi.org/legacy/' || 'https://test.pypi.org/legacy/' }}
