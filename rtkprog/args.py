@@ -3,6 +3,7 @@
 
 from argparse import ArgumentParser
 from dataclasses import dataclass
+from importlib.metadata import PackageNotFoundError, version
 
 from rtkprog.bluetooth_mac import BluetoothMAC
 from rtkprog.validation import (
@@ -86,9 +87,20 @@ def get_args() -> tuple[GlobalArgs, CmdArgs]:
 
 
 def _build_parser() -> ArgumentParser:
+    try:
+        _version = version("rtkprog")
+    except PackageNotFoundError:
+        _version = "unknown"
+
     parser = ArgumentParser(
         prog="rtkprog",
         description="Tool for programming Realtek RTL87x2x BT SoCs",
+    )
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {_version}",
     )
 
     # Global options
