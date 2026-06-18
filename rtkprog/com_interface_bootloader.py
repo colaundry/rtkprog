@@ -161,7 +161,11 @@ class BootloaderComInterface:
         params = struct.pack("<BI", RegType.NORMAL, chip.efuse_register)
         event = self._send_command(OpCode.VENDOR_READ, params).check(OpCode.VENDOR_READ)
 
-        assert chip.efuse_crc16_offset is not None
+        if chip.efuse_crc16_offset is None:
+            raise UnsupportedOperationError(
+                f"{chip.name}: efuse_register is set but efuse_crc16_offset is missing"
+            )
+
         return event.raw[
             chip.efuse_crc16_offset : chip.efuse_crc16_offset + EFUSE_CRC16_SIZE
         ]
